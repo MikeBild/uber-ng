@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "uber-ng",
+  "description": "My uber-ng GraphQL-API",
+  "engines": {
+    "node": "^8"
+  },
+  "dependencies": {
+    "subkit": "latest",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "scripts": {
+    "dev": "nodemon --ext  gql,sdl,js --exec subkit serve --port 8080 --graphiql --analysis 1000 --extentions",
+    "dev:mocked": "nodemon --ext  gql,sdl,js --exec subkit serve --port 8080 --mocked --graphiql --analysis 1000 --extentions",
+    "dev:jwt": "nodemon --ext  gql,sdl,js --exec subkit serve --port 8080 --graphiql --analysis 1000 --secret SuperSecret",
+    "start": "NODE_ENV=production subkit serve --port 80 --graphiql --analysis 1000",
+    "start:jwt": "NODE_ENV=production subkit serve --port 80 --secret SuperSecret --silent --analysis 1000",
+    "test": "mocha --require babel-polyfill --require babel-register"
+  }
+}

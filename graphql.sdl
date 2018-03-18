@@ -1,0 +1,70 @@
+interface Node {
+  id: ID!
+}
+
+scalar SuperDuperUniqueKey
+
+enum STATUS {
+  angefragt
+  angenommen
+  #Wenn das und das passiert ist
+  warteAufBestaetigung
+}
+
+type Fahrgast implements Node {
+  id: ID!
+  name: String!
+}
+
+input AnfrageInput {
+  fahrgastId: ID! @deprecated(reason: "Do not use!")
+  von: String!
+  nach: String!
+}
+
+# jsjssj
+type Angebot implements Node {
+  id: ID!
+  fahrgast: Fahrgast
+  von: String!
+  nach: String!
+  fahrer: Fahrer
+  wartezeit: String
+  status: STATUS
+}
+
+input AngebotAnnehmenInput {
+  angebotId: ID!
+}
+
+input AngebotAblehnenInput {
+  angebotId: ID!
+  grund: String!
+}
+
+type Fahrer {
+  id: ID!
+}
+
+type Viewer {
+  benutzername: String
+  angebot(id: ID!): Angebot
+  angebote(status: STATUS): [Angebot]
+}
+
+type  Query {
+  angebote(take: Int, skip: Int): [Angebot]
+  viewer(id: ID): Viewer
+  all: Node
+}
+
+type Mutation {
+  # sdlakdlkdl
+  fahrtAnfragen(input: AnfrageInput!): Angebot
+  angebotAnnehmen(input: AngebotAnnehmenInput!): Angebot
+  angebotAblehnen(input: AngebotAblehnenInput!): Angebot
+}
+
+type Subscription {
+  onAngebotChanged: Angebot
+}
