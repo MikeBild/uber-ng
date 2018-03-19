@@ -5,10 +5,12 @@ interface Node {
 scalar SuperDuperUniqueKey
 
 enum STATUS {
+  # Fahrt angefragt
   angefragt
-  angenommen
-  #Wenn das und das passiert ist
+  # Auftrag wartet auf Bestaetigung
   warteAufBestaetigung
+  # Fahrt angenommen
+  angenommen
 }
 
 type Fahrgast implements Node {
@@ -22,7 +24,7 @@ input AnfrageInput {
   nach: String!
 }
 
-# jsjssj
+# Fahrtangebote
 type Angebot implements Node {
   id: ID!
   fahrgast: Fahrgast
@@ -55,11 +57,11 @@ type Viewer {
 type  Query {
   angebote(take: Int, skip: Int): [Angebot]
   viewer(id: ID): Viewer
-  all: Node
+  entities: [Node]
 }
 
 type Mutation {
-  # sdlakdlkdl
+  # Fahrt wird angefragt
   fahrtAnfragen(input: AnfrageInput!): Angebot
   angebotAnnehmen(input: AngebotAnnehmenInput!): Angebot
   angebotAblehnen(input: AngebotAblehnenInput!): Angebot

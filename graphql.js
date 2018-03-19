@@ -2,8 +2,12 @@ const uuid = require("uuid");
 const { pubsub } = require("subkit");
 
 const ANGEBOTE = {};
+const FAHRGAESTE = {};
 
 export const resolvers = {
+  Node: {
+    __resolveType: (obj, context, info) => obj.__type
+  },
   Query: {
     angebote: async (
       parent,
@@ -14,7 +18,12 @@ export const resolvers = {
       const all = await loaders.angebote();
       return all.slice(skip, skip + take);
     },
-    viewer: () => ({})
+    viewer: () => ({}),
+    entities: async ({}) => {
+      const angebote = await loaders.angebote();
+      const fahrgaeste = await loaders.fahrgaeste();
+      return angebote.concat(fahrgaeste);
+    }
   },
   Mutation: {
     fahrtAnfragen: async (_, { input }, { loaders, user: { username } }) =>
@@ -36,8 +45,16 @@ export const resolvers = {
 };
 
 export const loaders = {
-  angebote: async () => Object.keys(ANGEBOTE).map(id => ANGEBOTE[id]),
-  angebot: async id => ANGEBOTE[id],
+  angebote: async () =>
+    Object.keys(ANGEBOTE).map(id =>
+      Object.assign(ANGEBOTE[id], { __type: "Angebot" })
+    ),
+  fahrgaeste: async () =>
+    Object.keys(FAHRGAESTE).map(id =>
+      Object.assign(FAHRGAESTE[id], { __type: "Fahrgast" })
+    ),
+  angebot: async id => Object.assign(ANGEBOTE[id], { __type: "Angebot" }),
+  fahrgast: async id => Object.assign(FAHRGAESTE[id], { __type: "Fahrgast" }),
   angebotErstellen: async ({ input: { von, nach }, username }) => {
     const id = uuid.v1();
     ANGEBOTE[id] = {
