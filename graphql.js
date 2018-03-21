@@ -68,9 +68,21 @@ export const loaders = {
     return ANGEBOTE[id];
   },
   angebotAnnehmen: async ({ input: { angebotId }, username }) => {
-    ANGEBOTE[angebotId].status = "angenommen";
-    pubsub.publish("angebotErstelltChannel", ANGEBOTE[angebotId]);
-    return ANGEBOTE[angebotId];
+    const angebot = ANGEBOTE[angebotId];
+    if (!angebot) throw new Error("Angebot wurde nicht gefunden.");
+    if (
+      !(
+        (angebot.status === "warteAufBestaetigung") |
+        (angebot.status === "angenommen")
+      )
+    ) {
+      throw new Error(
+        "Der Auftrag kann nur im Status warteAufBestaetigung angenommen werden."
+      );
+    }
+    angebot.status = "angenommen";
+    pubsub.publish("angebotErstelltChannel", angebot);
+    return angebot;
   }
 };
 
@@ -91,4 +103,4 @@ setInterval(() => {
       });
       pubsub.publish("angebotErstelltChannel", ANGEBOTE[id]);
     });
-}, 15000);
+}, 60000);
