@@ -64,10 +64,12 @@ export const loaders = {
       fahrgast: { id: username, name: username },
       status: "angefragt"
     };
+    pubsub.publish("angebotErstelltChannel", ANGEBOTE[id]);
     return ANGEBOTE[id];
   },
   angebotAnnehmen: async ({ input: { angebotId }, username }) => {
     ANGEBOTE[angebotId].status = "angenommen";
+    pubsub.publish("angebotErstelltChannel", ANGEBOTE[angebotId]);
     return ANGEBOTE[angebotId];
   }
 };
@@ -89,4 +91,4 @@ setInterval(() => {
       });
       pubsub.publish("angebotErstelltChannel", ANGEBOTE[id]);
     });
-}, 10000);
+}, 15000);
